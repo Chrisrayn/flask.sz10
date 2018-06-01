@@ -1,11 +1,23 @@
+from flask import render_template
 from flask_script import Manager
 
-from app import create_app
-from config import developConfig
+# 启动项目
 
-app = create_app(developConfig)
+from app import create_app
+from config import DevelopConfig
+
+app = create_app(DevelopConfig)
 
 manager = Manager(app)
+
+# 扩展迁移
+from models import db
+db.init_app(app)
+
+from flask_migrate import Migrate,MigrateCommand
+Migrate(app,db)
+manager.add_command('db',MigrateCommand)
+
 
 if __name__ == '__main__':
     manager.run()
